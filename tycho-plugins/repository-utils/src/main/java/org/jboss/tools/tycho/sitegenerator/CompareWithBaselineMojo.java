@@ -83,9 +83,11 @@ public class CompareWithBaselineMojo extends AbstractMojo {
 
 				for (Entry foundInBaseline : res.getArtifacts()) {
 					Version baselineVersion = new Version(foundInBaseline.getVersion());
-					getLog().debug("Found " + foundInBaseline.getId() + "/" + foundInBaseline.getVersion());
+					String delta = "" + (version.getMajor()-baselineVersion.getMajor())  + "." + (version.getMinor() - baselineVersion.getMinor()) + "." + (version.getMicro() - baselineVersion.getMicro());
+					
+					getLog().debug("Found " + foundInBaseline.getId() + "/" + foundInBaseline.getVersion() + " with delta: " + delta);
 					if (version.compareTo(baselineVersion) <= 0) {
-					    throw new MojoFailureException("Version have moved backwards for (" + id + "/" + version + "). Baseline has " + baselineVersion + ")");
+						throw new MojoFailureException("Version have moved backwards for (" + id + "/" + version + "). Baseline has " + baselineVersion + ") with delta: " + delta);
 					} else if (version.equals(baselineVersion)) {
 						File baselineFile = foundInBaseline.getLocation();
 						File currentFile = null;
